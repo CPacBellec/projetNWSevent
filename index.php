@@ -44,14 +44,16 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $entreprise = validateInput($_POST["entreprise"], "/^[a-zA-Z0-9\s'àÀâéÉèÈêÊëîïôœûùüçÇ^¨&]+$/");
     $fonction = validateInput($_POST["fonction"], "/^[a-zA-Z\s'àÀâéÉèÈêÊëîïôœûùüçÇ^¨]+$/");
     $email = validateInput($_POST["email"], "/^[a-zA-Z0-9._-àÀâéÉèÈêÊëîïôœûùüçÇ^¨]+@[a-zA-Z0-9.-àÀâéÉèÈêÊëîïôœûùüçÇ^¨]+\.[a-zA-Z]{2,4}$/");
+    $telephone = validateInput($_POST["telephone"], "/^[0-9]+$/");
+
 
     // Vérifier que les données sont définies
-    if ($nom !== false && $prenom !== false && $entreprise !== false && $fonction !== false && $email !== false) {
+    if ($nom !== false && $prenom !== false && $entreprise !== false && $fonction !== false && $email !== false && $telephone !== false) {
         // Utiliser des requêtes préparées pour éviter les injections SQL
-        $stmt = $conn->prepare("INSERT INTO user (lastName, firstName, company, job, email) VALUES (?, ?, ?, ?, ?)");
+        $stmt = $conn->prepare("INSERT INTO user (firstName, lastName, company, job, email, telephone) VALUES (?, ?, ?, ?, ?, ?)");
 
         // Liage des paramètres
-        $stmt->bind_param("sssss", $nom, $prenom, $entreprise, $fonction, $email);
+        $stmt->bind_param("ssssss", $nom, $prenom, $entreprise, $fonction, $email, $telephone);
 
         // Exécution de la requête
         if ($stmt->execute()) {
@@ -84,6 +86,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
         if ($email === false) {
             $erreur .= "Veuillez entrer une adresse email valide. ";
+        }
+
+        if ($telephone === false) {
+            $erreur .= "Veuillez entrer un numéro de téléphone valide. ";
         }
     }
 }
@@ -132,6 +138,11 @@ $conn->close();
         <div class="mb-4">
             <label for="fonction" class="block text-sm font-semibold text-gray-600">Fonction du poste:</label>
             <input type="text" name="fonction" id="fonction" class="border p-2 w-full" value="<?php echo isset($_POST['fonction']) ? htmlspecialchars($_POST['fonction']) : ''; ?>" required>
+        </div>
+
+        <div class="mb-4">
+            <label for="telephone" class="block text-sm font-semibold text-gray-600">Numéro de téléphone:</label>
+            <input type="tel" name="telephone" id="telephone" class="border p-2 w-full" value="<?php echo isset($_POST['telephone']) ? htmlspecialchars($_POST['telephone']) : ''; ?>" required>
         </div>
 
         <div class="mb-4">
