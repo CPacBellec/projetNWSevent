@@ -1,0 +1,11 @@
+{
+    "name": "wolfpac/projet-nw-sevent",
+    "autoload": {
+        "psr-4": {
+            "Wolfpac\\ProjetNwSevent\\": "src/"
+        }
+    },
+    "require": {
+        "swiftmailer/swiftmailer": "^6.3"
+    }
+}
